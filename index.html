@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Combined Clicker Game</title>
+</head>
+<body>
+  <h1>Clicker Game</h1>
+  <button id="clickButton">Click</button>
+  <button id="multiplierButton">Buy Multiplier (Cost 10)</button>
+  <p>Score: <span id="score">0</span></p>
+  <p>Highest Score: <span id="highestScore">0</span></p>
+  <p>Total Clicks: <span id="totalClicks">0</span></p>
+  <p>Multiplier: <span id="multiplierDisplay">1</span></p>
+  <p>Time Left: <span id="timeLeft">30</span>s</p>
 
+  <script>
+    let score = 0;
+    let highestScore = 0;
+    let totalClicks = 0;
+    let multiplier = 1;
+    let timeLeft = 30;
+    let bonusActive = false;
+
+    const scoreElem = document.getElementById("score");
+    const highestScoreElem = document.getElementById("highestScore");
+    const totalClicksElem = document.getElementById("totalClicks");
+    const multiplierDisplay = document.getElementById("multiplierDisplay");
+    const timeLeftElem = document.getElementById("timeLeft");
+
+    const clickButton = document.getElementById("clickButton");
+    const multiplierButton = document.getElementById("multiplierButton");
+
+    // Activate 5-second bonus
+    function activateBonus() {
+      bonusActive = true;
+      setTimeout(() => {
+        bonusActive = false;
+      }, 5000);
+    }
+
+    clickButton.addEventListener("click", () => {
+      totalClicks++;
+      // If bonus is not active, start it with the first click
+      if (!bonusActive) activateBonus();
+
+      // Add points based on bonus and multiplier
+      if (bonusActive) {
+        score += 2 * multiplier;
+      } else {
+        score += multiplier;
+      }
+
+      // Update highest score
+      if (score > highestScore) {
+        highestScore = score;
+        highestScoreElem.textContent = highestScore;
+      }
+
+      scoreElem.textContent = score;
+      totalClicksElem.textContent = totalClicks;
+    });
+
+    multiplierButton.addEventListener("click", () => {
+      if (score >= 10) {
+        score -= 10;
+        multiplier++;
+        scoreElem.textContent = score;
+        multiplierDisplay.textContent = multiplier;
+      }
+    });
+
+    // Countdown timer
+    const timer = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        timeLeftElem.textContent = timeLeft;
+      } else {
+        clearInterval(timer);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
